@@ -24,7 +24,7 @@ public class BookToBookViewConverter implements Converter<Book, BookView> {
     @Override
     public BookView convert(@NonNull Book book) {
         BookView view = new BookView();
-        view.setId(book.getId());
+        //view.setId(book.getId());
         view.setTitle(book.getTitle());
         view.setDescription(book.getDescription());
 

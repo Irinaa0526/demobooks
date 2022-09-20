@@ -7,10 +7,10 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.web.PageableDefault;
 import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
+import java.util.List;
 
 @RestController
 @RequestMapping("/book")
@@ -30,8 +30,15 @@ public class BookController {
 
     @GetMapping
     @ResponseBody
-    public Page<BookView> getAllBook(@PageableDefault(sort = "id", direction = Sort.Direction.ASC) Pageable pageable) {
-        return service.findAllBook(pageable);
+    public Page<String> getAllBook(@RequestParam(required = false) String title,
+                                   @PageableDefault(sort = "title", direction = Sort.Direction.ASC) Pageable pageable) {
+        return service.findAllBook(title, pageable);
+    }
+
+    @GetMapping("/main")
+    @ResponseBody
+    public List<String> getLast(){
+        return service.findLastBooks();
     }
 
     @PostMapping
@@ -54,27 +61,3 @@ public class BookController {
         return service.update(book, req);
     }
 }
-
-//    @PostMapping("/create")
-//    public ResponseEntity addBook(@RequestBody Book book){
-//        try {
-//            bookService.saveBook(book);
-//            return ResponseEntity.ok("Книга добавлена!");
-//        } catch (Exception e) {
-//            return ResponseEntity.badRequest().body("Ошибка");
-//        }
-//        //return bookService.saveBook(book);
-//    }
-//
-//    @GetMapping("/books/{id}")
-//    public ResponseEntity getOneBook(@PathVariable Long id){
-//        try{
-//            return ResponseEntity.ok(bookService.getOne(id));
-//        } catch (UserNotFoundException e) {
-//            return ResponseEntity.badRequest().body(e.getMessage());
-//        } catch (Exception e) {
-//            return ResponseEntity.badRequest().body("Произошла ошибка");
-//        }
-//    }
-
-
