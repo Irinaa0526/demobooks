@@ -1,14 +1,17 @@
 package com.example.demobooks.core.author.web;
 
 import com.example.demobooks.core.author.AuthorService;
+import com.example.demobooks.core.book.web.BookView;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.web.PageableDefault;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
+
 @RestController
-@RequestMapping("/author")
+@RequestMapping("/authors")
 public class AuthorController {
 
     private final AuthorService service;
@@ -21,5 +24,12 @@ public class AuthorController {
                                      @PageableDefault(sort = "name",
                                              direction = Sort.Direction.ASC) Pageable pageable) {
         return service.findAllAuthor(name, pageable);
+    }
+
+    @GetMapping("/{id}")
+    @ResponseBody
+    public Page<String> getAuthorsBooks(@PathVariable Long id,
+                                        Pageable pageable) {
+        return service.findAuthorsBooks(id, pageable);
     }
 }

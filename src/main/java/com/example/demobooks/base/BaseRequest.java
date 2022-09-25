@@ -31,6 +31,32 @@ public class BaseRequest implements Serializable {
         }
     }
 
+    public static class Name implements Serializable {
+        @NotNull
+        private String name;
+
+        public String getName() {
+            return name;
+        }
+
+        public void setName(String name) {
+            this.name = name;
+        }
+
+        @Override
+        public boolean equals(Object o) {
+            if (this == o) return true;
+            if (!(o instanceof Name)) return false;
+            Name name1 = (Name) o;
+            return Objects.equals(name, name1.name);
+        }
+
+        @Override
+        public int hashCode() {
+            return Objects.hash(name);
+        }
+    }
+
     public static class GenId<T> implements Serializable {
         @NotNull
         private T id;

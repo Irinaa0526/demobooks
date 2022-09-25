@@ -78,27 +78,63 @@ public class BookService {
     @Transactional
     public void delete(long id) {
         try {
+            Set<Author> authors = findBookOrThrow(id).getAuthors();
+
+            while (authors.size() != 0) {
+                Author author = authors.stream().findFirst().get();
+                Set<Book> books = author.getBooksAuthor();
+
+                // если у автора помимо удаляемой есть еще книги,
+                // тогда разрываем связь автора с удаляемой книгой,
+                // иначе удаляем автора
+                if (books.size() != 1) {
+                    Book book = findBookOrThrow(id);
+                    books.remove(book);
+                    book.getAuthors().remove(author);
+                }
+                else {
+                    authors.remove(author);
+                    authorRepo.delete(author);
+                }
+            }
             bookRepo.deleteById(id);
+
         } catch (EmptyResultDataAccessException e) {
             throw new EntityNotFoundException(messageUtil.getMessage("book.NotFound", id));
         }
     }
 
-    public BookView update(Book book, BookBaseReq req) {
-        Book newBook = this.prepare(book, req);
-        Book bookSave = bookRepo.save(newBook);
-        return bookToBookViewConverter.convert(bookSave);
-    }
+//    public BookView update(Book book, BookBaseReq req) {
+//        Book newBook = this.prepare(book, req);
+//        Book bookSave = bookRepo.save(newBook);
+//        return bookToBookViewConverter.convert(bookSave);
+//    }
 
     public Book prepare(Book book, BookBaseReq bookBaseReq){
         book.setTitle(bookBaseReq.getTitle());
         book.setDescription(bookBaseReq.getDescription());
-        List<Author> authorList = authorRepo.findAllById(bookBaseReq.getAuthors()
+        Set<String> nameList = bookBaseReq.getAuthors()
                 .stream()
-                .map(BaseRequest.Id::getId)
-                .collect(Collectors.toSet()));
-        Set<Author> authors = new HashSet<>(authorList);
-        book.setAuthors(authors);
+                .map(BaseRequest.Name::getName)
+                .collect(Collectors.toSet());
+
+        // если автор с таким именем существует в базе, то создаем связи,
+        // иначе сначала создаем нового автора
+        for (String nameAuthor: nameList){
+            Author author = authorRepo.findAllByName(nameAuthor);
+            if (author != null) {
+                author.getBooksAuthor().add(book);
+                book.getAuthors().add(author);
+            }
+            else {
+                Author newAuthor = new Author();
+                newAuthor.setName(nameAuthor);
+                Author saveAuthor = authorRepo.save(newAuthor);
+                saveAuthor.getBooksAuthor().add(book);
+                book.getAuthors().add(saveAuthor);
+            }
+        }
+
         return book;
     }
 }

@@ -14,7 +14,7 @@ public class BookBaseReq extends BaseRequest {
     private String description;
 
     //@NotEmpty
-    private List<@Valid Id> authors;
+    private List<Name> authors;
 
 
     public String getTitle() {
@@ -33,11 +33,11 @@ public class BookBaseReq extends BaseRequest {
         this.description = description;
     }
 
-    public List<Id> getAuthors() {
+    public List<Name> getAuthors() {
         return authors;
     }
 
-    public void setAuthors(List<Id> authors) {
+    public void setAuthors(List<Name> authors) {
         this.authors = authors;
     }
 }

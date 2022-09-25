@@ -13,7 +13,7 @@ import javax.validation.Valid;
 import java.util.List;
 
 @RestController
-@RequestMapping("/book")
+@RequestMapping()
 public class BookController {
 
     private final BookService service;
@@ -22,17 +22,17 @@ public class BookController {
         this.service = service;
     }
 
-    @GetMapping("/{id}")
-    @ResponseBody
-    public BookView getBook(@PathVariable Long id) {
-        return service.getBook(id);
-    }
-
-    @GetMapping
+    @GetMapping("/books")
     @ResponseBody
     public Page<String> getAllBook(@RequestParam(required = false) String title,
                                    @PageableDefault(sort = "title", direction = Sort.Direction.ASC) Pageable pageable) {
         return service.findAllBook(title, pageable);
+    }
+
+    @GetMapping("/books/{id}")
+    @ResponseBody
+    public BookView getBook(@PathVariable Long id) {
+        return service.getBook(id);
     }
 
     @GetMapping("/main")
@@ -41,23 +41,23 @@ public class BookController {
         return service.findLastBooks();
     }
 
-    @PostMapping
+    @PostMapping("/books")
     @ResponseStatus(HttpStatus.CREATED)
     @ResponseBody
     public BookView create(@RequestBody @Valid BookBaseReq req) {
         return service.create(req);
     }
 
-    @DeleteMapping("/{id}")
+    @DeleteMapping("/books/{id}")
     @ResponseStatus(HttpStatus.NO_CONTENT)
     public void deleteBook(@PathVariable Long id){
         service.delete(id);
     }
 
-    @PutMapping("/{id}")
-    public BookView updateBook(@PathVariable(name = "id") Long id,
-                                   @RequestBody @Valid BookBaseReq req){
-        Book book = service.findBookOrThrow(id);
-        return service.update(book, req);
-    }
+//    @PutMapping("/books/{id}")
+//    public BookView updateBook(@PathVariable(name = "id") Long id,
+//                                   @RequestBody @Valid BookBaseReq req){
+//        Book book = service.findBookOrThrow(id);
+//        return service.update(book, req);
+//    }
 }

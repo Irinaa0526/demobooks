@@ -14,6 +14,7 @@ import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Set;
 
 @Service
 public class AuthorService {
@@ -38,9 +39,15 @@ public class AuthorService {
                 .orElseThrow(() -> new EntityNotFoundException(messageUtil.getMessage("author.NotFound", id)));
     }
 
-    public AuthorView getAuthor(long id) {
-        Author author = findAuthorOrThrow(id);
-        return authorToAuthorViewConverter.convert(author);
+    public Page<String> findAuthorsBooks(long idAuthor, Pageable pageable) {
+
+        Page<String> authorsBooks = authorRepo.findBooksByAuthor(idAuthor, pageable);
+
+        List<String> titlesAuthorsBooks = new ArrayList<>();
+        authorsBooks.forEach(titleBook -> {
+            titlesAuthorsBooks.add(titleBook);
+        });
+        return new PageImpl<>(titlesAuthorsBooks, pageable, authorsBooks.getTotalElements());
     }
 
     public Page<String> findAllAuthor(String likeName, Pageable pageable) {
