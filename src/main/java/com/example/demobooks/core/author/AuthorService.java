@@ -4,6 +4,7 @@ import com.example.demobooks.core.author.converter.AuthorToAuthorViewConverter;
 import com.example.demobooks.core.author.web.AuthorView;
 import com.example.demobooks.core.book.Book;
 import com.example.demobooks.core.book.BookRepo;
+import com.example.demobooks.core.book.converter.BookToBookViewConverter;
 import com.example.demobooks.core.book.web.BookView;
 import com.example.demobooks.error.EntityNotFoundException;
 import com.example.demobooks.util.MessageUtil;
@@ -14,53 +15,53 @@ import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Set;
 
 @Service
 public class AuthorService {
 
     private final AuthorRepo authorRepo;
     private final AuthorToAuthorViewConverter authorToAuthorViewConverter;
+    private final BookToBookViewConverter bookToBookViewConverter;
     private final BookRepo bookRepo;
     private final MessageUtil messageUtil;
 
     public AuthorService(AuthorRepo authorRepo,
                          AuthorToAuthorViewConverter authorToAuthorViewConverter,
-                         BookRepo bookRepo,
+                         BookToBookViewConverter bookToBookViewConverter, BookRepo bookRepo,
                          MessageUtil messageUtil) {
         this.authorRepo = authorRepo;
         this.authorToAuthorViewConverter = authorToAuthorViewConverter;
+        this.bookToBookViewConverter = bookToBookViewConverter;
         this.bookRepo = bookRepo;
         this.messageUtil = messageUtil;
     }
 
-    public Author findAuthorOrThrow(long id) {
+    public Author findAuthorOrThrow(Long id) {
         return authorRepo.findById(id)
                 .orElseThrow(() -> new EntityNotFoundException(messageUtil.getMessage("author.NotFound", id)));
     }
 
-    public Page<String> findAuthorsBooks(long idAuthor, Pageable pageable) {
+    public Page<BookView> findAuthorsBooks(Long idAuthor, Pageable pageable) {
+        Page<Book> books = authorRepo.findBooksByAuthor(idAuthor, pageable);
+        List<BookView> bookViews = new ArrayList<>();
+        books.forEach(book -> bookViews.add(bookToBookViewConverter.convert(book)));
 
-        Page<String> authorsBooks = authorRepo.findBooksByAuthor(idAuthor, pageable);
-
-        List<String> titlesAuthorsBooks = new ArrayList<>();
-        authorsBooks.forEach(titleBook -> {
-            titlesAuthorsBooks.add(titleBook);
-        });
-        return new PageImpl<>(titlesAuthorsBooks, pageable, authorsBooks.getTotalElements());
+        return new PageImpl<>(bookViews, pageable, books.getTotalElements());
     }
 
-    public Page<String> findAllAuthor(String likeName, Pageable pageable) {
+    public Page<AuthorView> findAllAuthor(String likeName, Pageable pageable) {
 
         Page<Author> authors;
-        if (likeName != null) { authors = authorRepo.findByNameLike(likeName.toLowerCase(), pageable); }
-        else { authors = authorRepo.findAll(pageable); }
+        if (likeName != null) {
+            authors = authorRepo.findByNameLike(likeName.toLowerCase(), pageable);
+        }
+        else {
+            authors = authorRepo.findAll(pageable);
+        }
 
-        List<String> authorNames = new ArrayList<>();
-        authors.forEach(author -> {
-            String authorName = author.getName();
-            authorNames.add(authorName);
-        });
-        return new PageImpl<>(authorNames, pageable, authors.getTotalElements());
+        List<AuthorView> authorViews = new ArrayList<>();
+        authors.forEach(author -> authorViews.add(authorToAuthorViewConverter.convert(author)));
+
+        return new PageImpl<>(authorViews, pageable, authors.getTotalElements());
     }
 }

@@ -11,7 +11,6 @@ import java.util.Set;
 @Table(name="authors")
 public class Author {
     @Id
-//    @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name="id")
     @GenericGenerator(
             name = "authors_id_seq",
@@ -33,14 +32,13 @@ public class Author {
     @ManyToMany(mappedBy = "authors", fetch = FetchType.LAZY)
     private Set<Book> booksAuthor = new HashSet<>();
 
-//    public Author(long id, String name, Set<Book> booksAuthor) {
-//        //this.id = id;
-//        this.name = name;
-//        this.booksAuthor = booksAuthor;
-//    }
-//
-//    public Author() {
-//    }
+    public Author(String name, Set<Book> booksAuthor) {
+        this.name = name;
+        this.booksAuthor = booksAuthor;
+    }
+
+    public Author() {
+    }
 
     public long getId() {
         return id;

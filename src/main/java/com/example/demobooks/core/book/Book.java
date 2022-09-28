@@ -12,7 +12,6 @@ import java.util.Set;
 @Table(name="books")
 public class Book {
     @Id
-//    @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name="id")
     @GenericGenerator(
             name = "books_id_seq",
@@ -34,22 +33,21 @@ public class Book {
     @Column(name="description", columnDefinition = "text")
     private String description;
 
-    //@NotEmpty
+    @NotEmpty
     @ManyToMany(fetch = FetchType.LAZY, cascade = {CascadeType.ALL})
     @JoinTable(name = "book_author",
             joinColumns = { @JoinColumn(name = "id_book") },
             inverseJoinColumns = { @JoinColumn(name = "id_author") })
     private Set<Author> authors = new HashSet<>();
 
-//    public Book(long id, String title, String description, Set<Author> authors) {
-//        //this.id = id;
-//        this.title = title;
-//        this.description = description;
-//        this.authors = authors;
-//    }
-//
-//    public Book() {
-//    }
+    public Book(String title, String description, Set<Author> authors) {
+        this.title = title;
+        this.description = description;
+        this.authors = authors;
+    }
+
+    public Book() {
+    }
 
     public long getId() {
         return id;
@@ -82,5 +80,4 @@ public class Book {
     public void setAuthors(Set<Author> authors) {
         this.authors = authors;
     }
-
 }

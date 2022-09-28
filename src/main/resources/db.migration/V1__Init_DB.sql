@@ -7,7 +7,7 @@ CREATE SEQUENCE books_id_seq
 
 CREATE TABLE books (
     id BIGINT NOT NULL DEFAULT nextval('books_id_seq'),
-    title VARCHAR(255),
+    title VARCHAR(255) NOT NULL,
     description text,
     PRIMARY KEY (id));
 
@@ -21,7 +21,7 @@ CREATE SEQUENCE authors_id_seq
 
 CREATE TABLE authors (
     id BIGINT NOT NULL DEFAULT nextval('authors_id_seq'),
-    name VARCHAR(255),
+    name VARCHAR(255) NOT NULL,
     PRIMARY KEY (id));
 
 

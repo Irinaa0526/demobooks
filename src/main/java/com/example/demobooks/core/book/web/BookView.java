@@ -7,18 +7,19 @@ import java.util.HashSet;
 import java.util.Set;
 
 public class BookView {
-    //private long id;
+    private long id;
     private String title;
     private String description;
     private Set<AuthorView> authors = new HashSet<>();
 
-//    public long getId() {
-//        return id;
-//    }
-//
-//    public void setId(long id) {
-//        this.id = id;
-//    }
+
+    public long getId() {
+        return id;
+    }
+
+    public void setId(long id) {
+        this.id = id;
+    }
 
     public String getTitle() {
         return title;

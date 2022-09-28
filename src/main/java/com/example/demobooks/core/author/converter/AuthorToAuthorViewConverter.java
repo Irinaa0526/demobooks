@@ -12,7 +12,7 @@ public class AuthorToAuthorViewConverter implements Converter<Author, AuthorView
     @Override
     public AuthorView convert(@NonNull Author author) {
         AuthorView view = new AuthorView();
-        //view.setId(author.getId());
+        view.setId(author.getId());
         view.setName(author.getName());
         return view;
     }

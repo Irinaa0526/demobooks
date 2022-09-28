@@ -8,12 +8,12 @@ import java.util.List;
 
 public class BookBaseReq extends BaseRequest {
 
-    //@NotEmpty
+    @NotEmpty
     private String title;
 
     private String description;
 
-    //@NotEmpty
+    @NotEmpty
     private List<Name> authors;
 
 

@@ -8,8 +8,6 @@ import org.springframework.data.domain.Sort;
 import org.springframework.data.web.PageableDefault;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.List;
-
 @RestController
 @RequestMapping("/authors")
 public class AuthorController {
@@ -20,7 +18,7 @@ public class AuthorController {
 
     @GetMapping
     @ResponseBody
-    public Page<String> getAllAuthor(@RequestParam(required = false) String name,
+    public Page<AuthorView> getAllAuthor(@RequestParam(required = false) String name,
                                      @PageableDefault(sort = "name",
                                              direction = Sort.Direction.ASC) Pageable pageable) {
         return service.findAllAuthor(name, pageable);
@@ -28,8 +26,8 @@ public class AuthorController {
 
     @GetMapping("/{id}")
     @ResponseBody
-    public Page<String> getAuthorsBooks(@PathVariable Long id,
-                                        Pageable pageable) {
+    public Page<BookView> getAuthorsBooks(@PathVariable Long id,
+                                          Pageable pageable) {
         return service.findAuthorsBooks(id, pageable);
     }
 }
