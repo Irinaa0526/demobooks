@@ -16,4 +16,5 @@ public interface BookRepo extends JpaRepository<Book, Long> {
 
     @Query(value = "SELECT * FROM books WHERE lower(title) LIKE %:likeTitle% ORDER BY id DESC", nativeQuery = true)
     Page<Book> findByTitleLike(@Param("likeTitle") String likeTitle, Pageable pageable);
+
 }

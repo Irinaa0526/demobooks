@@ -42,11 +42,18 @@ public class AuthorService {
     }
 
     public Page<BookView> findAuthorsBooks(Long idAuthor, Pageable pageable) {
-        Page<Book> books = authorRepo.findBooksByAuthor(idAuthor, pageable);
-        List<BookView> bookViews = new ArrayList<>();
-        books.forEach(book -> bookViews.add(bookToBookViewConverter.convert(book)));
+        Author author = findAuthorOrThrow(idAuthor);
+        List<Book> books = new ArrayList<>(author.getBooksAuthor());
 
-        return new PageImpl<>(bookViews, pageable, books.getTotalElements());
+        List<BookView> bookViews = new ArrayList<>();
+        books.forEach(book ->
+            bookViews.add(bookToBookViewConverter.convert(book))
+        );
+
+        int start = (int) pageable.getOffset();
+        int end = Math.min((start + pageable.getPageSize()), bookViews.size());
+
+        return new PageImpl<>(bookViews.subList(start,end), pageable, bookViews.size());
     }
 
     public Page<AuthorView> findAllAuthor(String likeName, Pageable pageable) {

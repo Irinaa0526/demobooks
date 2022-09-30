@@ -27,7 +27,9 @@ public class AuthorController {
     @GetMapping("/{id}")
     @ResponseBody
     public Page<BookView> getAuthorsBooks(@PathVariable Long id,
-                                          Pageable pageable) {
+                                     @PageableDefault(sort = "name",
+                                             direction = Sort.Direction.ASC,
+                                             value = 10) Pageable pageable) {
         return service.findAuthorsBooks(id, pageable);
     }
 }
