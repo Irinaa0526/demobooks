@@ -1,3 +1,9 @@
+ALTER SEQUENCE books_id_seq RESTART WITH 1;
+UPDATE books SET id=nextval('books_id_seq');
+
+ALTER SEQUENCE authors_id_seq RESTART WITH 1;
+UPDATE authors SET id=nextval('authors_id_seq');
+
 INSERT INTO books (title, description)
 VALUES
 ('Рита Хейуорт и спасение из Шоушенка', 'Книга про побег'),
